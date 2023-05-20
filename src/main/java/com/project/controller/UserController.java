@@ -8,11 +8,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.model.User;
+import com.project.service.EmailService;
 import com.project.service.UserService;
 import com.project.service.UserServiceInterface;
+
+import jakarta.mail.MessagingException;
 
 @RestController
 @RequestMapping("/user")
@@ -21,6 +25,9 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private EmailService emailService;
 
 //	@GetMapping("/hello")
 //	@PreAuthorize("hasRole('USER')")
@@ -36,4 +43,15 @@ public class UserController {
 		  
 		
 	}
+	
+	@PostMapping("/send-mail")
+	public ResponseEntity<String> sendMail(@RequestParam String toMail) throws MessagingException
+	{
+		  emailService.sendMail(toMail);
+		  return new ResponseEntity<>("Mail Sent successfully", HttpStatus.OK);
+		  
+		
+	}
+	
+	
 }

@@ -24,7 +24,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
 	 http
 	        .csrf().disable()
 	        .authorizeHttpRequests()
-	        .requestMatchers("/user/add","/courses/getAll").permitAll()
+	        .requestMatchers("/user/send-mail","/courses/getAll").permitAll()
 	        .and()
 	        .authorizeHttpRequests()
 	        .requestMatchers("/student/**").hasAuthority("ADMIN")
