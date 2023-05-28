@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.model.User;
 import com.project.service.EmailService;
+import com.project.service.PaymentService;
+import com.project.service.SmsSender;
 import com.project.service.UserService;
 import com.project.service.UserServiceInterface;
+import com.stripe.exception.StripeException;
 
 import jakarta.mail.MessagingException;
 
@@ -28,6 +31,12 @@ public class UserController {
 	
 	@Autowired
 	private EmailService emailService;
+	
+	@Autowired
+	private SmsSender smsService;
+	
+	@Autowired
+	private PaymentService paymentService;
 
 //	@GetMapping("/hello")
 //	@PreAuthorize("hasRole('USER')")
@@ -52,6 +61,29 @@ public class UserController {
 		  
 		
 	}
+	
+	@GetMapping("/send-sms")
+	public ResponseEntity<String> sendSms(@RequestParam String phoneNumber) 
+	{
+		  smsService.sendMessage(phoneNumber, "Hii.. this is sample sms");
+		  return new ResponseEntity<>("SMS Sent successfully", HttpStatus.OK);
+		  
+		
+	}
+	
+	@PostMapping("/payments")
+	public ResponseEntity<String> payments(@RequestParam double amount)  
+	{
+		  try {
+			paymentService.createPaymentIntend(amount, "INR");
+		} catch (StripeException e) {
+			
+			return new ResponseEntity<>("payment failure" +e.getMessage(), HttpStatus.FORBIDDEN);
+		}
+		  return new ResponseEntity<>("payment successfully", HttpStatus.OK);
+		  
+	}
+	
 	
 	
 }
